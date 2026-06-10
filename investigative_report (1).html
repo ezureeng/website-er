@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Report | Emergency Department Waiting Times</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        netflixBlack: '#000000',
+                        netflixRed: '#780606',
+                        netflixRedHover: '#9A0B0B',
+                        darkGray: '#141414',
+                        lightGray: '#e5e5e5'
+                    },
+                    fontFamily: {
+                        sans: ['Gotham', 'Montserrat', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'vignette': 'radial-gradient(circle, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #780606;
+        }
+
+        /* Cinematic fade out at the bottom of the video */
+        .video-gradient-bottom {
+            background: linear-gradient(to top, #000000 0%, rgba(0,0,0,0.7) 20%, rgba(0,0,0,0) 100%);
+        }
+        
+        /* Drop cap for the article */
+        .drop-cap::first-letter {
+            float: left;
+            font-size: 4.5rem;
+            line-height: 0.8;
+            padding-top: 0.1em;
+            padding-right: 0.1em;
+            padding-left: 0.05em;
+            color: #780606;
+            font-weight: 900;
+        }
+
+        /* Subtle text selection color */
+        ::selection {
+            background-color: #780606;
+            color: white;
+        }
+        
+        /* Hide default video controls until interacting */
+        .custom-video::-webkit-media-controls-enclosure {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .custom-video:hover::-webkit-media-controls-enclosure,
+        .custom-video.show-controls::-webkit-media-controls-enclosure {
+            opacity: 1;
+        }
+
+        /* Collapsible smoothly transitions height and opacity */
+        .collapsible-content {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
+        }
+        .collapsible-content.expanded {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="font-sans overflow-x-hidden">
+
+    <header class="fixed top-0 w-full z-50 bg-gradient-to-b from-black/90 via-black/50 to-transparent transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0 flex items-center gap-3">
+                    <div class="w-8 h-8 bg-netflixRed rounded-sm flex items-center justify-center font-bold text-xl tracking-tighter">
+                        IR
+                    </div>
+                    <span class="text-white font-bold text-lg tracking-widest uppercase">Investigates</span>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#" class="text-white hover:text-netflixRed transition-colors font-semibold text-sm">The Report</a>
+                    <a href="#article" class="text-gray-300 hover:text-white transition-colors text-sm">Summary</a>
+                    <a href="#data" class="text-gray-300 hover:text-white transition-colors text-sm">Key Data</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="relative w-full h-[60vh] md:h-[85vh] lg:h-[95vh] bg-darkGray overflow-hidden">
+        <video 
+            id="hero-video"
+            class="custom-video absolute top-0 left-0 w-full h-full object-cover opacity-80"
+            poster="https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2070&auto=format&fit=crop"
+            preload="metadata">
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <div class="absolute inset-0 bg-vignette pointer-events-none"></div>
+        <div class="absolute inset-0 bg-black/20 pointer-events-none"></div>
+        <div class="absolute bottom-0 w-full h-[40%] video-gradient-bottom pointer-events-none z-10"></div>
+
+        <div id="video-overlay" class="absolute inset-0 z-20 flex flex-col justify-end pb-12 md:pb-32 px-6 md:px-16 lg:px-24">
+            <div class="max-w-3xl transform transition-transform duration-700 translate-y-0">
+                <span class="inline-block py-1 px-2 rounded-sm bg-netflixRed text-white text-xs font-bold tracking-wider mb-4 shadow-lg shadow-netflixRed/20">SPECIAL REPORT</span>
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-4 leading-tight tracking-tight drop-shadow-2xl">
+                    EMERGENCY <span class="text-netflixRed">DEPARTMENT</span>
+                </h1>
+                <p class="text-lg md:text-2xl text-lightGray font-light mb-8 drop-shadow-md max-w-2xl">
+                    An investigative look into the breaking point of our emergency departments. What happens when the wait for life-saving care takes too long?
+                </p>
+                
+                <div class="flex flex-wrap items-center gap-4">
+                    <button id="play-btn" class="flex items-center gap-2 bg-white text-black hover:bg-gray-200 transition-colors px-8 py-3 rounded text-lg font-bold">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        Play Report
+                    </button>
+                    <!-- Trigger Button connected directly to long form expand/collapse -->
+                    <button id="more-info-btn" class="flex items-center gap-2 bg-gray-500/50 hover:bg-gray-500/70 text-white transition-colors px-8 py-3 rounded text-lg font-bold backdrop-blur-sm border border-gray-400/30">
+                        <svg class="w-6 h-6 transform transition-transform duration-300" id="info-btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                        <span id="info-btn-text">More Info</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main id="article" class="relative z-30 bg-netflixBlack text-white -mt-4 pb-20">
+        <div class="max-w-4xl mx-auto px-6 lg:px-8">
+            
+            <div class="flex items-center gap-4 text-sm text-gray-400 font-semibold mb-10 pb-6 border-b border-gray-800">
+                <span class="text-netflixRed">2026</span>
+                <span>•</span>
+                <span>Investigative Documentary</span>
+                <span>•</span>
+                <span class="border border-gray-600 px-1 rounded text-xs">TV-MA</span>
+            </div>
+
+            <section class="mb-10">
+                <h3 class="text-sm font-bold tracking-widest text-netflixRed uppercase mb-3">The Story Angle Summary</h3>
+                <p class="text-xl md:text-2xl text-white font-light leading-relaxed mb-6">
+                    Our featured angle story investigates the escalating gridlock inside metropolitan triage wards. We look at the devastating human toll of "bed-blocking"—where critical-care patients remain stranded in hallways because local wards are completely full. 
+                </p>
+                <p class="text-gray-300 font-light leading-relaxed mb-8">
+                    This investigative summary exposes the immediate bottlenecks and resource deficits triggering widespread ambulance ramping and putting thousands of urgent admissions at severe risk every night.
+                </p>
+                
+                <!-- Inline toggle action button -->
+                <div class="flex justify-start">
+                    <button id="inline-toggle-btn" class="group flex items-center gap-2 text-netflixRed hover:text-white font-bold tracking-wider uppercase text-sm transition-colors duration-300">
+                        <span id="inline-toggle-text">Read Full Investigative Report</span>
+                        <svg class="w-4 h-4 transform group-hover:translate-y-1 transition-all duration-300" id="inline-btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <div id="collapsible-report" class="collapsible-content">
+                <article class="space-y-8 text-lg md:text-xl text-lightGray leading-relaxed font-light pt-8 border-t border-gray-900">
+                    <p class="drop-cap">
+                        The fluorescent lights hum overhead, casting a sterile, unyielding glow over rows of plastic chairs. It is 2:00 AM on a Tuesday, yet the waiting room at Central General Hospital is standing room only. For the patients here, time has shifted from a measure of convenience to a matter of survival.
+                    </p>
+                    
+                    <p>
+                        Our year-long investigation into the nation's emergency departments reveals a system pushed far beyond its intended capacity. The phrase <span class="text-white font-semibold">"bed block"</span> is no longer just medical jargon; it is the daily reality dictating who receives immediate care and who is forced to wait in agonizing pain.
+                    </p>
+
+                    <blockquote class="my-12 pl-6 border-l-4 border-netflixRed py-2">
+                        <p class="text-2xl md:text-3xl font-bold text-white italic mb-4">
+                            "We are practicing disaster medicine on a daily basis. The emergency room is the canary in the coal mine, and right now, the canary is dead."
+                        </p>
+                        <footer class="text-gray-400 text-sm font-semibold uppercase tracking-wider">
+                            — Dr. Sarah Jenkins, Former Head of Emergency Medicine
+                        </footer>
+                    </blockquote>
+
+                    <p>
+                        Data obtained through Freedom of Information requests exposes a chilling trend. Over the past five years, the average wait time for "Category 2" patients—those requiring care within 10 minutes due to potentially life-threatening conditions—has ballooned by 45%. In some urban centers, this wait routinely exceeds an hour.
+                    </p>
+
+                    <h2 class="text-3xl font-bold text-white mt-12 mb-6 tracking-tight">The Anatomy of a Delay</h2>
+                    
+                    <p>
+                        The crisis at the front door is symptomatic of failures deeper within the hospital. When inpatient wards are full, emergency patients who require admission have nowhere to go. They languish on gurneys in ER hallways, a phenomenon known as "access block." 
+                    </p>
+                    
+                    <p>
+                        This prevents paramedics from transferring incoming patients, leading to <span class="text-netflixRed font-semibold text-white">ambulance ramping</span>—where fully equipped ambulances and their crews are stuck outside hospitals, unable to respond to new 911 calls.
+                    </p>
+                </article>
+            </div>
+
+            <section id="data" class="mt-20 pt-16 border-t border-gray-900">
+                <h3 class="text-2xl font-bold text-white mb-8">By The Numbers</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-darkGray p-6 rounded-lg border border-gray-800 hover:border-netflixRed transition-colors duration-300">
+                        <div class="text-netflixRed text-4xl font-black mb-2">45%</div>
+                        <div class="text-white font-semibold mb-2">Increase in Wait Times</div>
+                        <p class="text-gray-400 text-sm">For critical Category 2 patients over the last five years across major metropolitan hospitals.</p>
+                    </div>
+                    <div class="bg-darkGray p-6 rounded-lg border border-gray-800 hover:border-netflixRed transition-colors duration-300">
+                        <div class="text-netflixRed text-4xl font-black mb-2">12.5 hrs</div>
+                        <div class="text-white font-semibold mb-2">Average Admission Wait</div>
+                        <p class="text-gray-400 text-sm">The time taken from ER arrival to being placed in a designated hospital bed.</p>
+                    </div>
+                    <div class="bg-darkGray p-6 rounded-lg border border-gray-800 hover:border-netflixRed transition-colors duration-300">
+                        <div class="text-netflixRed text-4xl font-black mb-2">1 in 4</div>
+                        <div class="text-white font-semibold mb-2">Ambulances Ramped</div>
+                        <p class="text-gray-400 text-sm">The proportion of emergency vehicles delayed at hospital drop-offs due to lack of ER space.</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="bg-[#0a0a0a] border-t border-gray-900 py-12 text-center text-gray-500 text-sm">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="w-12 h-12 mx-auto bg-netflixRed rounded flex items-center justify-center font-bold text-white text-xl tracking-tighter mb-6 opacity-80">
+                IR
+            </div>
+            <p class="mb-4">© 2026 Investigative Reports. All rights reserved.</p>
+            <div class="flex justify-center space-x-6">
+                <a href="#" class="hover:text-white transition-colors">Sources</a>
+                <a href="#" class="hover:text-white transition-colors">Methodology</a>
+                <a href="#" class="hover:text-white transition-colors">Contact the Team</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const video = document.getElementById('hero-video');
+            const playBtn = document.getElementById('play-btn');
+            const overlay = document.getElementById('video-overlay');
+            const navbar = document.getElementById('navbar');
+
+            // Interactive Collapsible Elements
+            const moreInfoBtn = document.getElementById('more-info-btn');
+            const inlineToggleBtn = document.getElementById('inline-toggle-btn');
+            const collapsibleReport = document.getElementById('collapsible-report');
+            
+            // Text and icon indicators
+            const infoBtnText = document.getElementById('info-btn-text');
+            const infoBtnIcon = document.getElementById('info-btn-icon');
+            const inlineToggleText = document.getElementById('inline-toggle-text');
+            const inlineBtnIcon = document.getElementById('inline-btn-icon');
+
+            let isExpanded = false;
+
+            function toggleReport() {
+                isExpanded = !isExpanded;
+
+                if (isExpanded) {
+                    // Expand and reveal
+                    collapsibleReport.classList.add('expanded');
+                    collapsibleReport.style.maxHeight = collapsibleReport.scrollHeight + "px";
+                    
+                    // Update main video "More Info" button
+                    infoBtnText.textContent = "Show Less";
+                    infoBtnIcon.classList.add('rotate-180');
+
+                    // Update inline summary button
+                    inlineToggleText.textContent = "Hide Detailed Report";
+                    inlineBtnIcon.classList.add('rotate-180');
+                    
+                    // Smoothly scroll user down to the start of the report
+                    setTimeout(() => {
+                        collapsibleReport.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                } else {
+                    // Collapse and hide
+                    collapsibleReport.style.maxHeight = "0";
+                    collapsibleReport.classList.remove('expanded');
+                    
+                    // Reset main video "More Info" button
+                    infoBtnText.textContent = "More Info";
+                    infoBtnIcon.classList.remove('rotate-180');
+
+                    // Reset inline summary button
+                    inlineToggleText.textContent = "Read Full Investigative Report";
+                    inlineBtnIcon.classList.remove('rotate-180');
+
+                    // Smoothly scroll back to the summary section
+                    document.getElementById('article').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+
+            // Bind triggers
+            moreInfoBtn.addEventListener('click', toggleReport);
+            inlineToggleBtn.addEventListener('click', toggleReport);
+
+            // Handle Play Button Click
+            playBtn.addEventListener('click', () => {
+                if (video.paused) {
+                    video.play();
+                    video.controls = true;
+                    video.classList.add('show-controls');
+                    overlay.style.opacity = '0';
+                    overlay.style.pointerEvents = 'none';
+                    video.muted = false; 
+                }
+            });
+
+            // If user clicks video to pause, restore overlay
+            video.addEventListener('pause', () => {
+                overlay.style.opacity = '1';
+                overlay.style.pointerEvents = 'auto';
+                video.controls = false;
+                video.classList.remove('show-controls');
+            });
+
+            // Navbar backdrop animation on scroll
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.replace('from-black/90', 'from-black');
+                    navbar.classList.add('bg-black');
+                } else {
+                    navbar.classList.replace('from-black', 'from-black/90');
+                    navbar.classList.remove('bg-black');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
